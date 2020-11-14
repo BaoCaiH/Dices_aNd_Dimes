@@ -1,35 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="1d51cfcf-f8eb-4bc6-8f13-1c4944483ab8" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/.name" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/checkstyle-idea.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dictionaries" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/saveactions_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/sbt.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Adventure.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/combat/character/Character.scala" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/combat/character/constants.scala" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/combat/dice/D10.scala" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/combat/dice/D100.scala" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/combat/dice/D12.scala" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/combat/dice/D2.scala" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/combat/dice/D20.scala" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/combat/dice/D4.scala" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/combat/dice/D6.scala" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/combat/dice/D8.scala" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/combat/dice/Dice.scala" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/combat/dice/DiceSet.scala" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/combat/hexaGrid/Floor.scala" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/combat/hexaGrid/HexaGridPos.scala" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/combat/hexaGrid/Hexagon.scala" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/combat/hexaGrid/Obstacle.scala" afterDir="false" />
+    <list default="true" id="1d51cfcf-f8eb-4bc6-8f13-1c4944483ab8" name="Default Changelist" comment="Initial commit with HexaGrid">
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/checkstyle-idea.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/checkstyle-idea.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -62,7 +55,7 @@
     <property name="project.structure.last.edited" value="Libraries" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
-    <property name="settings.editor.selected.configurable" value="org.jetbrains.plugins.scala.compiler.ScalaCompileServerForm" />
+    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
   </component>
   <component name="RunManager">
     <configuration name="&lt;template&gt;" type="TestNG" default="true" selected="false">
@@ -84,4 +77,41 @@
     </configuration>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Initial commit with HexaGrid" />
+    <option name="LAST_COMMIT_MESSAGE" value="Initial commit with HexaGrid" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="389" y="27" key="CommitChangelistDialog2" timestamp="1605362657197">
+      <screen x="0" y="23" width="1440" height="877" />
+    </state>
+    <state x="389" y="27" key="CommitChangelistDialog2/0.23.1440.877@0.23.1440.877" timestamp="1605362657197" />
+    <state x="236" y="88" key="DiffContextDialog" timestamp="1605362597502">
+      <screen x="0" y="23" width="1440" height="877" />
+    </state>
+    <state x="236" y="88" key="DiffContextDialog/0.23.1440.877@0.23.1440.877" timestamp="1605362597502" />
+    <state x="594" y="159" key="RollbackChangesDialog" timestamp="1605362625393">
+      <screen x="0" y="23" width="1440" height="877" />
+    </state>
+    <state x="594" y="159" key="RollbackChangesDialog/0.23.1440.877@0.23.1440.877" timestamp="1605362625393" />
+    <state x="412" y="189" key="Vcs.Push.Dialog.v2" timestamp="1605362699086">
+      <screen x="0" y="23" width="1440" height="877" />
+    </state>
+    <state x="412" y="189" key="Vcs.Push.Dialog.v2/0.23.1440.877@0.23.1440.877" timestamp="1605362699086" />
+    <state x="487" y="71" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1605362132194">
+      <screen x="0" y="23" width="1440" height="877" />
+    </state>
+    <state x="487" y="71" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/0.23.1440.877@0.23.1440.877" timestamp="1605362132194" />
+  </component>
 </project>
