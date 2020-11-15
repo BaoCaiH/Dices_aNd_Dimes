@@ -3,14 +3,16 @@ package combat.character
 import combat.character.constants._
 import combat.dice._
 import combat.hexaGrid.{HexaGrid, HexaGridPos}
+import combat.race._
 
 abstract class Character(
                           val name: String,
+                          val race: Race,
                           initialStat: Vector[Int],
                           initialPosition: HexaGridPos,
                           val board: HexaGrid,
                           initialHitPoint: Int = 0,
-                          initialExperiencePoint: Int = 0
+                          initialExperiencePoint: Int = 85000
                         ) {
   private val diceSet = new DiceSet
   // TODO: implement random stat character initialization
@@ -28,23 +30,36 @@ abstract class Character(
   private var currentHp: Int = initialHitPoint
   private var currentExp: Int = initialExperiencePoint
   private var currentPosition: HexaGridPos = initialPosition
-  private var dmgImmunity: Vector[String] = Vector[String]()
-  private var dmgResistant: Vector[String] = Vector[String]()
   private var initiative: Int = 0
-  val race: String
+  private var remainingMovementSpeed: Int = 0
+  private var remainingActions: Int = 0
+  var dmgImmunity: Vector[String] = Vector[String]()
+  var dmgResistant: Vector[String] = Vector[String]()
   val classBranch: String
   val background: String
-  val alignment: String
-  val speed: Int
+  //  val alignment: String // not needed at the moment
   val actions: Int
   val armorClass: Int
+  // These proficiencies will be affected by class and race,
+  // should not implement here.
+  val baseStatsProficiency: Vector[String]
+  val abilityCheckProficiency: Vector[String]
 
-  private var remainingMovementSpeed: Int = this.speed
-  private var remainingActions: Int = 0
+  def speed: Int = this.race.speed
 
-  /** These proficiencies will be affected by class and race,
-   * should not implement here. */
-  def baseStatsProficiency: Map[String, Int]
+  def immunities: Vector[String] = this.dmgImmunity ++ this.race.dmgImmunity
+
+  def resistances: Vector[String] = this.dmgResistant ++ this.race.dmgResistant
+
+  def statProficiency(statAbbreviation: String): Int =
+    if (this.baseStatsProficiency.contains(statAbbreviation)) this.proficiencyBonus else 0
+
+  def abilityProficiency(abilityName: String): Int =
+    if ((this.race.abilityCheckProficiency ++ this.abilityCheckProficiency)
+      .contains(abilityName)) this.proficiencyBonus
+    else 0
+
+  def isAlive: Boolean = this.remainingHp <= 0
 
   private def currentStat: Map[String, Int] =
     statsRefer
@@ -84,13 +99,13 @@ abstract class Character(
     }
   }
 
-  def statSaving(statAbbreviation: String): Int
+  def statSaving(statAbbreviation: String): Int =
+    this.currentStatModifier(statAbbreviation) + this.statProficiency(statAbbreviation)
 
-  def abilityCheck(abilityName: String): Int
+  def abilityCheck(abilityName: String): Int =
+    this.abilityProficiency(abilityName) + this.currentStatModifier(abilitiesToStat(abilityName))
 
-  def passivePerception: Int = this.abilityCheck("perception") + 10
-
-  //  def remainingSpeed: Int = this.remainingMovementSpeed
+  //  def passivePerception: Int = this.abilityCheck("perception") + 10
 
   /** Level is determined by the amount of cumulative EXPs. */
   def level: Int = {
@@ -118,7 +133,6 @@ abstract class Character(
     }
   }
 
-
   /** Carrying capacity of a character is 15 times
    * the strength stat of that character, in pounds
    * (yes, darn it, it's pounds not kgs). */
@@ -132,17 +146,17 @@ abstract class Character(
   //  /** Total remaining HP, including temporary HP. */
   //  def hp: Int = this.remainingHp
 
-  private def inflictDmg(target: Character, dmg: Int, dmgType: String): Unit = {
+  protected def inflictDmg(target: Character, dmg: Int, dmgType: String): Unit = {
     println(s"Attempt to inflict $dmg $dmgType damage(s) to ${target.name}")
     val actualDmg = target.takeDmg(dmg, dmgType)
     println(s"${target.name} took $actualDmg damage(s)")
     println(s"${target.name} looks ${target.status}")
   }
 
-  private def takeDmg(dmg: Int, dmgType: String): Int = {
+  protected def takeDmg(dmg: Int, dmgType: String): Int = {
     var actualDmg = dmg
-    if (this.dmgImmunity.contains(dmgType)) actualDmg *= 0
-    if (this.dmgResistant.contains(dmgType)) actualDmg /= 2
+    if (this.immunities.contains(dmgType)) actualDmg *= 0
+    if (this.resistances.contains(dmgType)) actualDmg /= 2
     if (this.temporaryHp >= actualDmg) this.temporaryHp -= actualDmg
     else {
       this.currentHp -= (actualDmg - this.temporaryHp)
@@ -151,14 +165,45 @@ abstract class Character(
     actualDmg
   }
 
+  private def checkRolls: Int = this.diceSet.roll(this.diceSet.d20)
+
+  private def checkRolls(withAdvantage: Int): Int = {
+    if (withAdvantage == 1) this.checkRollsAdvantage
+    else if (withAdvantage == -1) this.checkRollsDisadvantage
+    else this.checkRolls
+  }
+
+  private def checkRollsAdvantage: Int = this.diceSet.rollAdvantage(this.diceSet.d20)
+
+  private def checkRollsDisadvantage: Int = this.diceSet.rollDisadvantage(this.diceSet.d20)
+
+  private def attackRoll(withAdvantage: Int = 0): Int = this.checkRolls(withAdvantage)
+
+  def savingThrow(statAbbreviation: String,
+                  withAdvantage: Int = 0,
+                  withBlessing: Boolean = false): Int = {
+    this.checkRolls(withAdvantage) +
+      this.statSaving(statAbbreviation) +
+      (if (withBlessing) this.diceSet.blessing
+      else 0)
+  }
+
+  private def meleeOrRange(mOR: String): Int =
+    if (mOR == "range") this.currentStatModifier("dex")
+    else this.currentStatModifier("str")
+
+  private def isSucceed(target: Character, atkRoll: Int): Boolean =
+    atkRoll >= target.armorClass
+
   /** Different character has different attack patterns/options.
    *
    * Look for this in specific character classes. */
-  def action(target: Character): Unit = {
+  def action(target: Character): String = {
     if (this.remainingActions != 0) {
       this.inflictDmg(target, 0, "normal")
       this.remainingActions -= 1
-    } else println("All actions have been used up!")
+      "Action succeeded!"
+    } else "All actions have been used up!"
   }
 
   /** Move toward a desirable destination.
@@ -171,9 +216,13 @@ abstract class Character(
    *
    * @param destination a position on the HexaGrid board. */
   def moveToward(destination: HexaGridPos): Boolean = {
-    val distance = this.currentPosition.distance(destination)
-    if (distance > this.remainingMovementSpeed && this.board.elementAt(destination).isEmpty) {
-      this.remainingMovementSpeed -= distance
+    val distance = this.currentPosition.distance(destination) * 5
+    if (distance > this.remainingSpeed && this.board.elementAt(destination).isEmpty) {
+      if (this.race.bonusSpeed >= distance)
+        this.race.bonusSpeed -= distance
+      else {
+        this.remainingMovementSpeed -= (distance - this.race.bonusSpeed)
+      }
       this.board.swap(this.currentPosition, destination)
       true
     } else {
@@ -182,7 +231,14 @@ abstract class Character(
     }
   }
 
-  private def replenishSpeed(): Unit = this.remainingMovementSpeed = this.speed - this.currentStatModifier("speed")
+  private def remainingSpeed: Int = this.remainingMovementSpeed + this.race.bonusSpeed
+
+  def addSpeed(extra: Int): Unit = this.remainingMovementSpeed += math.min(extra, this.speed)
+
+  private def replenishSpeed(): Unit = {
+    this.race.bonusSpeed = 0
+    this.remainingMovementSpeed = this.speed + this.currentStatModifier("speed")
+  }
 
   private def replenishAction(): Unit = this.remainingActions = this.actions
 
@@ -195,7 +251,7 @@ abstract class Character(
     println(s"$this, level ${this.level}")
     println(s"You look ${this.status}")
     println(s"Remaining HP: ${this.remainingHp}")
-    println(s"Remaining speed: ${this.remainingMovementSpeed}")
+    println(s"Remaining speed: ${this.remainingSpeed}")
     println(s"Current location: ${this.currentPosition}")
   }
 
