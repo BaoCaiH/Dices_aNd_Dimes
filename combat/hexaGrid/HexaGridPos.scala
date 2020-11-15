@@ -67,4 +67,6 @@ case class HexaGridPos(x: Int, y: Int) extends Product with Serializable {
     else if (yDiff == 0) xDiff / 2
     else yDiff + xDiff / 2 - yDiff / 2
   }
+
+  override def toString: String = s"($x, $y)"
 }

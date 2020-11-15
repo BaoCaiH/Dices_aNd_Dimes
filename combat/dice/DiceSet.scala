@@ -3,6 +3,14 @@ package combat.dice
 import scala.annotation.tailrec
 
 class DiceSet {
+  val d2: Dice = D2
+  val d4: Dice = D4
+  val d6: Dice = D6
+  val d8: Dice = D8
+  val d10: Dice = D10
+  val d20: Dice = D20
+  val d100: Dice = D100
+
   private def repeat(n: Int, dice: Dice): Vector[Int] = {
     @tailrec
     def recRollN(n: Int, acc: Vector[Int]): Vector[Int] = {
@@ -31,6 +39,6 @@ class DiceSet {
 
   def rollDisadvantage(dice: Dice): Int = repeat(2, dice).min
 
-  def blessing: Int = roll(D4)
+  def blessing: Int = roll(d4)
 
 }
