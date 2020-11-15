@@ -2,7 +2,7 @@ package combat.hexaGrid
 
 import scala.collection.mutable
 
-abstract class HexaGrid(val width: Int, val height: Int) {
+class HexaGrid(val width: Int, val height: Int) {
   val size: Int = (width + 1) * (height / 2) + (height % 2) * ((width / 2) + 1)
 
   private def placeHexagon(x: Int, y: Int): Hexagon = {
@@ -110,4 +110,5 @@ abstract class HexaGrid(val width: Int, val height: Int) {
     this (position2) = temp
   }
 
+  override def toString: String = s"Board of width of ${this.width} and height of ${this.height} units."
 }
