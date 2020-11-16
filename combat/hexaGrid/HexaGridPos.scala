@@ -63,9 +63,7 @@ case class HexaGridPos(x: Int, y: Int) extends Product with Serializable {
   def distance(another: HexaGridPos): Int = {
     val xDiff = this.xDiff(another).abs
     val yDiff = this.yDiff(another).abs
-    if (xDiff == 0) yDiff
-    else if (yDiff == 0) xDiff / 2
-    else yDiff + xDiff / 2 - yDiff / 2
+    yDiff + math.max(0, (xDiff - yDiff) / 2)
   }
 
   override def toString: String = s"($x, $y)"

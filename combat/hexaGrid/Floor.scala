@@ -15,7 +15,7 @@ class Floor extends Hexagon {
    *
    * In a more sophisticate setup, the hexagon with character
    * should still be passable, just not stayable. */
-  def isUnpassable: Boolean = false
+  def isUnpassable: Boolean = !this.isEmpty
 
   /** Clear content. */
   def clear(): Unit = this.occupant = None

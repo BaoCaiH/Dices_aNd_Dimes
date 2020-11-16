@@ -1,6 +1,6 @@
 package combat.race
 
-trait Tabaxi extends Race {
+class Tabaxi extends Race {
   private var felineCapability: Int = 1
 
   override val abilityCheckProficiency: Vector[String] = Vector[String]("perception", "stealth")

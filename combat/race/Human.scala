@@ -1,5 +1,5 @@
 package combat.race
 
-trait Human extends Race {
+class Human extends Race {
   override def toString: String = "Human"
 }

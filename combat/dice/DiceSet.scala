@@ -8,6 +8,7 @@ class DiceSet {
   val d6: Dice = D6
   val d8: Dice = D8
   val d10: Dice = D10
+  val d12: Dice = D12
   val d20: Dice = D20
   val d100: Dice = D100
 
@@ -40,5 +41,7 @@ class DiceSet {
   def rollDisadvantage(dice: Dice): Int = repeat(2, dice).min
 
   def blessing: Int = roll(d4)
+
+  def apply(dice: Dice): Int = this.roll(dice)
 
 }
