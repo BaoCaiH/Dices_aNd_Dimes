@@ -14,7 +14,7 @@ abstract class Character(
                           initialHitPoint: Int = 0,
                           initialExperiencePoint: Int = 85000
                         ) {
-  private val diceSet = new DiceSet
+  protected val diceSet = new DiceSet
   // TODO: implement random stat character initialization
   //  in the distant future, after many moons
   //  protected def this(name: String) =
@@ -23,20 +23,21 @@ abstract class Character(
   // These stats can be val for the moment
   // However they were kept var because they make sense
   // in a fully developed game
-  private var staticStats: Map[String, Int] = statsRefer.zip(initialStat.take(6)).toMap
-  private var temporaryStatsBonus: Map[String, Int] = initialStatsBonus
-  private var maxHp: Int = initialHitPoint
-  private var temporaryHp: Int = 0
-  private var currentHp: Int = initialHitPoint
-  private var currentExp: Int = initialExperiencePoint
-  private var currentPosition: HexaGridPos = initialPosition
-  private var initiative: Int = 0
-  private var remainingMovementSpeed: Int = 0
-  private var remainingActions: Int = 0
-  var dmgImmunity: Vector[String] = Vector[String]()
-  var dmgResistant: Vector[String] = Vector[String]()
+  protected var staticStats: Map[String, Int] = statsRefer.zip(initialStat.take(6)).toMap
+  protected var temporaryStatsBonus: Map[String, Int] = initialStatsBonus
+  protected var maxHp: Int = initialHitPoint
+  protected var temporaryHp: Int = 0
+  protected var currentHp: Int = initialHitPoint
+  protected var currentExp: Int = initialExperiencePoint
+  protected var currentPosition: HexaGridPos = initialPosition
+  protected var initiative: Int = 0
+  protected var remainingMovementSpeed: Int = 0
+  protected var remainingActions: Int = 0
+  protected var dmgImmunity: Vector[String] = Vector[String]()
+  protected var dmgResistant: Vector[String] = Vector[String]()
+  protected var potionVials: Int = 1
   val classBranch: String
-  val background: String
+  //  val background: String
   //  val alignment: String // not needed at the moment
   val actions: Int
   val armorClass: Int
@@ -61,7 +62,7 @@ abstract class Character(
 
   def isAlive: Boolean = this.remainingHp <= 0
 
-  private def currentStat: Map[String, Int] =
+  protected def currentStat: Map[String, Int] =
     statsRefer
       .zip(
         this.staticStats
@@ -70,12 +71,12 @@ abstract class Character(
       ).toMap
       .withDefaultValue(0)
 
-  private def currentStatModifier: Map[String, Int] =
+  protected def currentStatModifier: Map[String, Int] =
     this.currentStat
       .map(stats => stats._1 -> (stats._2 / 2 - 5))
       .withDefaultValue(0)
 
-  private def status: String = {
+  protected def status: String = {
     val remainingHpPortion = this.remainingHp.toDouble / this.maxHp
     remainingHpPortion match {
       case n if n <= 0.0 => "death"
@@ -87,7 +88,7 @@ abstract class Character(
   }
 
   // The following methods are to check the stats of the character
-  def stat(statAbbreviation: String): Int = this.currentStat(statAbbreviation)
+  def stat(statAbbreviation: String): Int = this.currentStatModifier(statAbbreviation)
 
   def proficiencyBonus: Int = {
     this.level match {
@@ -141,7 +142,7 @@ abstract class Character(
   /** Returns the current HP of a character.
    *
    * This includes temporary HP gained from spells and items. */
-  private def remainingHp: Int = this.currentHp + this.temporaryHp
+  protected def remainingHp: Int = this.currentHp + this.temporaryHp
 
   //  /** Total remaining HP, including temporary HP. */
   //  def hp: Int = this.remainingHp
@@ -165,19 +166,26 @@ abstract class Character(
     actualDmg
   }
 
-  private def checkRolls: Int = this.diceSet.roll(this.diceSet.d20)
+  protected def checkRolls: Int = this.diceSet.roll(this.diceSet.d20)
 
-  private def checkRolls(withAdvantage: Int): Int = {
+  protected def checkRolls(withAdvantage: Int): Int = {
     if (withAdvantage == 1) this.checkRollsAdvantage
     else if (withAdvantage == -1) this.checkRollsDisadvantage
     else this.checkRolls
   }
 
-  private def checkRollsAdvantage: Int = this.diceSet.rollAdvantage(this.diceSet.d20)
+  protected def checkRollsAdvantage: Int = this.diceSet.rollAdvantage(this.diceSet.d20)
 
-  private def checkRollsDisadvantage: Int = this.diceSet.rollDisadvantage(this.diceSet.d20)
+  protected def checkRollsDisadvantage: Int = this.diceSet.rollDisadvantage(this.diceSet.d20)
 
-  private def attackRoll(withAdvantage: Int = 0): Int = this.checkRolls(withAdvantage)
+  protected def attackRoll(withAdvantage: Int = 0): Int = this.checkRolls(withAdvantage)
+
+  protected def hasAdvantage(mOR: String): Int = {
+    val neighborCharacters: Int = this.currentPosition.neighbors.count(this.board(_).nonEmpty)
+    if (mOR == "melee" && neighborCharacters > 1) 1
+    else if (mOR == "range" && neighborCharacters > 0) -1
+    else 0
+  }
 
   def savingThrow(statAbbreviation: String,
                   withAdvantage: Int = 0,
@@ -188,22 +196,39 @@ abstract class Character(
       else 0)
   }
 
-  private def meleeOrRange(mOR: String): Int =
+  protected def meleeOrRange(mOR: String): Int =
     if (mOR == "range") this.currentStatModifier("dex")
     else this.currentStatModifier("str")
 
-  private def isSucceed(target: Character, atkRoll: Int): Boolean =
+  protected def isSucceed(target: Character, atkRoll: Int): Boolean =
     atkRoll >= target.armorClass
+
+  protected def drinkPotion(): Boolean = {
+    if (this.potionVials > 0) {
+      this.currentHp += math.min(
+        this.maxHp - this.currentHp,
+        this.diceSet.roll(4)(this.diceSet.d4) + 4
+      )
+      println(s"Drank potion, remaining HP is: ${this.remainingHp}")
+      true
+    } else {
+      println("Oh no! There's no more potion left!")
+      false
+    }
+  }
 
   /** Different character has different attack patterns/options.
    *
    * Look for this in specific character classes. */
-  def action(target: Character): String = {
+  def action(target: Character, n: Int): Boolean = {
     if (this.remainingActions != 0) {
-      this.inflictDmg(target, 0, "normal")
       this.remainingActions -= 1
-      "Action succeeded!"
-    } else "All actions have been used up!"
+      println("Action succeeded!")
+      true
+    } else {
+      println("All actions have been used up!")
+      false
+    }
   }
 
   /** Move toward a desirable destination.
@@ -217,13 +242,14 @@ abstract class Character(
    * @param destination a position on the HexaGrid board. */
   def moveToward(destination: HexaGridPos): Boolean = {
     val distance = this.currentPosition.distance(destination) * 5
-    if (distance > this.remainingSpeed && this.board.elementAt(destination).isEmpty) {
+    if (distance < this.remainingSpeed && this.board.elementAt(destination).isEmpty) {
       if (this.race.bonusSpeed >= distance)
         this.race.bonusSpeed -= distance
       else {
         this.remainingMovementSpeed -= (distance - this.race.bonusSpeed)
       }
       this.board.swap(this.currentPosition, destination)
+      this.currentPosition = destination
       true
     } else {
       println("This position is either too far away, not available or not exist in this board.")
@@ -231,29 +257,42 @@ abstract class Character(
     }
   }
 
-  private def remainingSpeed: Int = this.remainingMovementSpeed + this.race.bonusSpeed
+  protected def remainingSpeed: Int = this.remainingMovementSpeed + this.race.bonusSpeed
 
-  def addSpeed(extra: Int): Unit = this.remainingMovementSpeed += math.min(extra, this.speed)
-
-  private def replenishSpeed(): Unit = {
+  protected def replenishSpeed(): Unit = {
     this.race.bonusSpeed = 0
     this.remainingMovementSpeed = this.speed + this.currentStatModifier("speed")
   }
 
-  private def replenishAction(): Unit = this.remainingActions = this.actions
+  protected def replenishAction(): Unit = this.remainingActions = this.actions
+
+  protected def distance(target: Character): Int = this.currentPosition.distance(target.currentPosition) * 5
 
   def newTurn(): Unit = {
     this.replenishSpeed()
     this.replenishAction()
   }
 
-  def checkStatus(): Unit = {
-    println(s"$this, level ${this.level}")
-    println(s"You look ${this.status}")
-    println(s"Remaining HP: ${this.remainingHp}")
-    println(s"Remaining speed: ${this.remainingSpeed}")
-    println(s"Current location: ${this.currentPosition}")
+  def checkOtherCharacterPosition: String = {
+    this.board
+      .allHexagons
+      .filter(_.character.isDefined)
+      .map(_.character.get)
+      .filter(_.currentPosition != this.currentPosition)
+      .map(c => c.name + ": " + c.currentPosition)
+      .mkString("\n")
   }
+
+  def checkStatus(): String = {
+    s"$this, level ${this.level}\n" +
+      s"You look ${this.status}\n" +
+      s"Remaining HP: ${this.remainingHp}\n" +
+      s"Remaining speed: ${this.remainingSpeed}\n" +
+      s"Remaining action: ${this.remainingActions}\n" +
+      s"Current location: ${this.currentPosition}"
+  }
+
+  def checkTarget(target: Character): String = target.status
 
   /** Use at the beginning of a combat to determine the order of turns. */
   def initiativeRoll: Int = {
