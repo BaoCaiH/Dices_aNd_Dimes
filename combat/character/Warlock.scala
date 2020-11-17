@@ -35,4 +35,14 @@ abstract class Warlock(
       } else println("A blast beamed ahead like a mad beast, but it missed...")
     }
   }
+
+  protected def tollTheDead(target: Character): Unit = {
+    val loudness = ((this.level - 5) / 6) + 1
+    val saving = target.savingThrow("wis")
+    val dmgDice = if (target.remainingHp < target.maxHp) this.diceSet.d12 else this.diceSet.d10
+    if (this.spellSave > saving) {
+      println(s"${this.name} pointed at ${target.name}, ${target.name} heard a disgusting sound coming from an unknown source, it's unbearable!")
+      this.inflictDmg(target, this.diceSet.roll(loudness)(dmgDice), "necrotic")
+    } else println(s"${this.name} pointed at ${target.name}, ${target.name} grinned as if the attack was anticipated...")
+  }
 }

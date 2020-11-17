@@ -148,10 +148,10 @@ abstract class Character(
   //  def hp: Int = this.remainingHp
 
   protected def inflictDmg(target: Character, dmg: Int, dmgType: String): Unit = {
-    println(s"Attempt to inflict $dmg $dmgType damage(s) to ${target.name}")
+    println(s"\tAttempt to inflict $dmg $dmgType damage(s) to ${target.name}")
     val actualDmg = target.takeDmg(dmg, dmgType)
-    println(s"${target.name} took $actualDmg damage(s)")
-    println(s"${target.name} looks ${target.status}")
+    println(s"\t${target.name} took $actualDmg damage(s)")
+    println(s"\t${target.name} looks ${target.status}")
   }
 
   protected def takeDmg(dmg: Int, dmgType: String): Int = {

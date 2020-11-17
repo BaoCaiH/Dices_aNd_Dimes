@@ -20,7 +20,7 @@ class DiceSet {
     }
 
     val rolls = recRollN(n, Vector[Int]())
-    println(s"Dice ${dice.value} rolls: " + rolls.mkString(", "))
+    println(s"\tDice ${dice.value} rolls: " + rolls.mkString(", "))
     rolls
   }
 
