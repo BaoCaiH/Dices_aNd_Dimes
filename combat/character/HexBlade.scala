@@ -30,6 +30,8 @@ class HexBlade(
   private def callAction(target: Character, n: Int): Boolean = {
     n match {
       case 0 =>
+        this.drinkPotion()
+      case 1 =>
         if (this.distance(target) > 120) {
           println("The target seems to be too far away to do this, try something else or move closer.")
           false
@@ -37,7 +39,7 @@ class HexBlade(
           this.eldritchBlast(target)
           true
         }
-      case 1 =>
+      case 2 =>
         if (this.distance(target) > 5) {
           println("The target seems to be too far away to do this, try something else or move closer.")
           false
@@ -45,8 +47,6 @@ class HexBlade(
           this.hexBlade(target)
           true
         }
-      case 2 =>
-        this.drinkPotion()
     }
   }
 
