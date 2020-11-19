@@ -62,12 +62,11 @@ abstract class Character(
 
   def isAlive: Boolean = this.remainingHp <= 0
 
+  def isFullHp: Boolean = this.remainingHp == this.maxHp
+
   protected def currentStat: Map[String, Int] =
-    statsRefer
-      .zip(
-        this.staticStats
-          .zip(this.temporaryStatsBonus)
-          .map(stats => stats._1._2 + stats._2._2)
+    (for (stat <- statsRefer)
+      yield stat -> (this.staticStats(stat) + this.temporaryStatsBonus(stat))
       ).toMap
       .withDefaultValue(0)
 
@@ -181,9 +180,14 @@ abstract class Character(
   protected def attackRoll(withAdvantage: Int = 0): Int = this.checkRolls(withAdvantage)
 
   protected def hasAdvantage(mOR: String): Int = {
-    val neighborCharacters: Int = this.currentPosition.neighbors.count(this.board(_).nonEmpty)
+    val neighborCharacters: Int = this.currentPosition.neighbors.count(this.board(_).character.isDefined)
     if (mOR == "melee" && neighborCharacters > 1) 1
     else if (mOR == "range" && neighborCharacters > 0) -1
+    else 0
+  }
+
+  protected def isCriticalHit(atkDice: Int, dmgDice: Dice): Int = {
+    if (atkDice == 20) dmgDice.value
     else 0
   }
 
@@ -217,16 +221,20 @@ abstract class Character(
     }
   }
 
+  protected def callAction(target: Character, n: Int): Boolean
+
   /** Different character has different attack patterns/options.
    *
    * Look for this in specific character classes. */
   def action(target: Character, n: Int): Boolean = {
-    if (this.remainingActions != 0) {
-      this.remainingActions -= 1
-      println("Action succeeded!")
-      true
+    if (this.remainingActions > 0) {
+      val acted = this.callAction(target, n)
+      if (acted) {
+        this.remainingActions -= 1
+        true
+      } else false
     } else {
-      println("All actions have been used up!")
+      println("You have used up your actions in this turn!")
       false
     }
   }
