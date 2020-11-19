@@ -36,9 +36,15 @@ class DiceSet {
     roll(1)(dice)
   }
 
-  def rollAdvantage(dice: Dice): Int = repeat(2, dice).max
+  def rollAdvantage(dice: Dice): Int = {
+    println("Advantage, take the larger roll!")
+    repeat(2, dice).max
+  }
 
-  def rollDisadvantage(dice: Dice): Int = repeat(2, dice).min
+  def rollDisadvantage(dice: Dice): Int = {
+    println("Disadvantage, take the smaller roll...")
+    repeat(2, dice).min
+  }
 
   def blessing: Int = roll(d4)
 

@@ -28,10 +28,12 @@ abstract class Warlock(
 
   protected def eldritchBlast(target: Character): Unit = {
     for (_ <- 0 to ((this.level - 5) / 6) + 1) {
-      val atkRoll = this.attackRoll(this.hasAdvantage("range")) + this.spellAttack
+      val atkDice = this.attackRoll(this.hasAdvantage("range"))
+      val atkRoll = atkDice + this.spellAttack
+      println(s"Attack roll: $atkRoll")
       if (this.isSucceed(target, atkRoll)) {
         println(s"A blast struct ${target.name} like a rhino!")
-        this.inflictDmg(target, this.diceSet.roll(this.diceSet.d12), "force")
+        this.inflictDmg(target, this.diceSet.roll(this.diceSet.d12) + this.meleeOrRange("range") + this.isCriticalHit(atkDice, this.diceSet.d12), "force")
       } else println("A blast beamed ahead like a mad beast, but it missed...")
     }
   }
@@ -39,7 +41,7 @@ abstract class Warlock(
   protected def tollTheDead(target: Character): Unit = {
     val loudness = ((this.level - 5) / 6) + 1
     val saving = target.savingThrow("wis")
-    val dmgDice = if (target.remainingHp < target.maxHp) this.diceSet.d12 else this.diceSet.d10
+    val dmgDice = if (!target.isFullHp) this.diceSet.d12 else this.diceSet.d10
     if (this.spellSave > saving) {
       println(s"${this.name} pointed at ${target.name}, ${target.name} heard a disgusting sound coming from an unknown source, it's unbearable!")
       this.inflictDmg(target, this.diceSet.roll(loudness)(dmgDice), "necrotic")

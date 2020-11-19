@@ -49,4 +49,21 @@ abstract class Fighter(
       false
     }
   }
+
+  //  override def action(target: Character, n: Int): Boolean = {
+  //    if (this.remainingActions > 0 && n < 8) {
+  //      val acted = this.callAction(target, n)
+  //      if (acted) {
+  //        this.remainingActions -= 1
+  //        true
+  //      } else false
+  //    } else if (n == 8) {
+  //      this.secondWind()
+  //    } else if (n == 9) {
+  //      this.actionSurge()
+  //    } else {
+  //      println("You have used up your actions in this turn!")
+  //      false
+  //    }
+  //  }
 }
