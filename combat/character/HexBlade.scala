@@ -25,8 +25,8 @@ class HexBlade(
     println(s"Attack roll: $atkRoll")
     if (this.isSucceed(target, atkRoll)) {
       this.inflictDmg(target, this.diceSet.roll(2)(this.diceSet.d6) + this.meleeOrRange("melee") + this.isCriticalHit(atkDice, this.diceSet.d6) * 2, "slashing")
-      s"An enormous blade materialized on ${this.name}'s hands, he swung it directly at ${target.name}'s torso. That must did some damages!"
-    } else s"An enormous blade materialized on ${this.name}'s hands, but the sheer weight seems to be too much for him to handle, he missed..."
+      s"An enormous blade materialized on ${this.name}'s hands, he swung it directly at ${target.name}'s torso. That must did some damages!\n"
+    } else s"An enormous blade materialized on ${this.name}'s hands, but the sheer weight seems to be too much for him to handle, he missed...\n"
   }
 
   protected def callAction(target: Character, n: Int): (Boolean, String) = {
@@ -35,16 +35,23 @@ class HexBlade(
         this.drinkPotion()
       case 1 =>
         if (this.distance(target) > 120) {
-          (false, "The target seems to be too far away to do this, try something else or move closer.")
+          (false, "The target seems to be too far away to do this, try something else or move closer.\n")
         } else {
           (true, this.eldritchBlast(target))
         }
       case 2 =>
         if (this.distance(target) > 5) {
-          (false, "The target seems to be too far away to do this, try something else or move closer.")
+          (false, "The target seems to be too far away to do this, try something else or move closer.\n")
         } else {
           (true, this.hexBlade(target))
         }
+      case 3 =>
+        if (this.distance(target) > 60) {
+          (false, "The target seems to be too far away to do this, try something else or move closer.\n")
+        } else {
+          (true, this.tollTheDead(target))
+        }
+      case _ => (false, "Unknown action, try something else.\n")
     }
   }
 }
