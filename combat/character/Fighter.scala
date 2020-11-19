@@ -30,16 +30,16 @@ abstract class Fighter(
       this.temporaryHp += math.max(0, additionalHp - this.maxHp + this.currentHp)
       this.currentHp += math.min(additionalHp, this.maxHp - this.currentHp)
       this.winds -= 1
-      s"A stream of power flown through ${this.name} like a second wind, remaining HP is: ${this.remainingHp}"
-    } else "Oh no! Looks like this is the limit..."
+      s"A stream of power flown through ${this.name} like a second wind, remaining HP is: ${this.remainingHp}\n"
+    } else "Oh no! Looks like this is the limit...\n"
   }
 
   def actionSurge(): String = {
     if (this.surge > 0 && this.remainingActions == 0) {
       this.replenishAction()
       this.surge -= 1
-      s"Adrenaline level surged in ${this.name}'s veins, ${this.name} can do this all day, remaining action is: ${this.remainingActions}"
-    } else "Nothing happened in a while... what a let down..."
+      s"Adrenaline level surged in ${this.name}'s veins, ${this.name} can do this all day, remaining action is: ${this.remainingActions}\n"
+    } else "Nothing happened in a while... what a let down...\n"
   }
 
   //  override def action(target: Character, n: Int): Boolean = {

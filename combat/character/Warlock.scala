@@ -26,16 +26,21 @@ abstract class Warlock(
 
   protected def spellAttack: Int = this.proficiencyBonus + this.stat("cha")
 
+  protected def spellAttackRoll(mOR: String): (Int, Int) = {
+    val atkDice = this.attackRoll(this.hasAdvantage(mOR))
+    val atkRoll = atkDice + this.spellAttack
+    println(s"Attack roll: $atkRoll")
+    (atkDice, atkRoll)
+  }
+
   protected def eldritchBlast(target: Character): String = {
     var actionString = ""
     for (_ <- 0 to ((this.level - 5) / 6) + 1) {
-      val atkDice = this.attackRoll(this.hasAdvantage("range"))
-      val atkRoll = atkDice + this.spellAttack
-      println(s"Attack roll: $atkRoll")
+      val (atkDice, atkRoll) = this.spellAttackRoll("range")
       if (this.isSucceed(target, atkRoll)) {
         this.inflictDmg(target, this.diceSet.roll(this.diceSet.d12) + this.meleeOrRange("range") + this.isCriticalHit(atkDice, this.diceSet.d12), "force")
-        actionString += s"A blast struct ${target.name} like a rhino!"
-      } else actionString += "A blast beamed ahead like a mad beast, but it missed..."
+        actionString += s"A blast struct ${target.name} like a rhino!\n"
+      } else actionString += "A blast beamed ahead like a mad beast, but it missed...\n"
     }
     actionString
   }
@@ -46,7 +51,7 @@ abstract class Warlock(
     val dmgDice = if (!target.isFullHp) this.diceSet.d12 else this.diceSet.d10
     if (this.spellSave > saving) {
       this.inflictDmg(target, this.diceSet.roll(loudness)(dmgDice), "necrotic")
-      s"${this.name} pointed at ${target.name}, ${target.name} heard a disgusting sound coming from an unknown source, it's unbearable!"
-    } else s"${this.name} pointed at ${target.name}, ${target.name} grinned as if the attack was anticipated..."
+      s"${this.name} pointed at ${target.name}, ${target.name} heard a disgusting sound coming from an unknown source, it's unbearable!\n"
+    } else s"${this.name} pointed at ${target.name}, ${target.name} grinned as if the attack was anticipated...\n"
   }
 }

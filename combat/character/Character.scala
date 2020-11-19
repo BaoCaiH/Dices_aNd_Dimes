@@ -24,7 +24,7 @@ abstract class Character(
   // However they were kept var because they make sense
   // in a fully developed game
   protected var staticStats: Map[String, Int] = statsRefer.zip(initialStat.take(6)).toMap
-  protected var temporaryStatsBonus: Map[String, Int] = initialStatsBonus
+  protected var temporaryStatsBonus: Map[String, Int] = initialStatsBonus.withDefaultValue(0)
   protected var maxHp: Int = initialHitPoint
   protected var temporaryHp: Int = 0
   protected var currentHp: Int = initialHitPoint
@@ -60,9 +60,11 @@ abstract class Character(
       .contains(abilityName)) this.proficiencyBonus
     else 0
 
-  def isAlive: Boolean = this.remainingHp <= 0
+  def isAlive: Boolean = this.remainingHp > 0
 
   def isFullHp: Boolean = this.remainingHp == this.maxHp
+
+  def isResilient: Boolean = this.remainingHp > 100
 
   protected def currentStat: Map[String, Int] =
     (for (stat <- statsRefer)
@@ -179,6 +181,13 @@ abstract class Character(
 
   protected def attackRoll(withAdvantage: Int = 0): Int = this.checkRolls(withAdvantage)
 
+  protected def attackRoll(mOR: String): (Int, Int) = {
+    val atkDice = this.attackRoll(this.hasAdvantage(mOR))
+    val atkRoll = atkDice + this.meleeOrRange(mOR) + this.proficiencyBonus
+    println(s"Attack roll: $atkRoll")
+    (atkDice, atkRoll)
+  }
+
   protected def hasAdvantage(mOR: String): Int = {
     val neighborCharacters: Int = this.currentPosition.neighbors.count(this.board(_).character.isDefined)
     if (mOR == "melee" && neighborCharacters > 1) 1
@@ -189,6 +198,11 @@ abstract class Character(
   protected def isCriticalHit(atkDice: Int, dmgDice: Dice): Int = {
     if (atkDice == 20) dmgDice.value
     else 0
+  }
+
+  protected def imposeStatBonus(target: Character, stat: String, value: Int): Boolean = {
+    target.temporaryStatsBonus += (stat -> value)
+    true
   }
 
   def savingThrow(statAbbreviation: String,
@@ -259,16 +273,22 @@ abstract class Character(
     } else "This position is either too far away, not available or not exist in this board."
   }
 
+  def moveToward(x: Int, y: Int): String = this.moveToward(HexaGridPos(x, y))
+
   protected def remainingSpeed: Int = this.remainingMovementSpeed + this.race.bonusSpeed
 
   protected def replenishSpeed(): Unit = {
     this.race.bonusSpeed = 0
-    this.remainingMovementSpeed = this.speed + this.currentStatModifier("speed")
+    this.remainingMovementSpeed = this.speed + this.temporaryStatsBonus("speed")
   }
 
   protected def replenishAction(): Unit = this.remainingActions = this.actions
 
-  protected def distance(target: Character): Int = this.currentPosition.distance(target.currentPosition) * 5
+  def distance(target: Character): Int = this.currentPosition.distance(target.currentPosition) * 5
+
+  def distance(position: HexaGridPos): Int = this.currentPosition.distance(position) * 5
+
+  def distance(x: Int, y: Int): Int = this.distance(HexaGridPos(x, y))
 
   def newTurn(): Unit = {
     this.replenishSpeed()
