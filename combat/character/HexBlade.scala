@@ -19,35 +19,31 @@ class HexBlade(
 
   override protected def meleeOrRange(mOR: String): Int = math.max(this.stat("cha"), super.meleeOrRange(mOR))
 
-  private def hexBlade(target: Character): Unit = {
+  private def hexBlade(target: Character): String = {
     val atkDice = this.attackRoll(this.hasAdvantage("melee"))
     val atkRoll = atkDice + this.meleeOrRange("melee") + this.proficiencyBonus
     println(s"Attack roll: $atkRoll")
     if (this.isSucceed(target, atkRoll)) {
-      println(s"An enormous blade materialized on ${this.name}'s hands, he swung it directly at ${target.name}'s torso. That must did some damages!")
       this.inflictDmg(target, this.diceSet.roll(2)(this.diceSet.d6) + this.meleeOrRange("melee") + this.isCriticalHit(atkDice, this.diceSet.d6) * 2, "slashing")
-    } else println(s"An enormous blade materialized on ${this.name}'s hands, but the sheer weight seems to be too much for him to handle, he missed...")
+      s"An enormous blade materialized on ${this.name}'s hands, he swung it directly at ${target.name}'s torso. That must did some damages!"
+    } else s"An enormous blade materialized on ${this.name}'s hands, but the sheer weight seems to be too much for him to handle, he missed..."
   }
 
-  protected def callAction(target: Character, n: Int): Boolean = {
+  protected def callAction(target: Character, n: Int): (Boolean, String) = {
     n match {
       case 0 =>
         this.drinkPotion()
       case 1 =>
         if (this.distance(target) > 120) {
-          println("The target seems to be too far away to do this, try something else or move closer.")
-          false
+          (false, "The target seems to be too far away to do this, try something else or move closer.")
         } else {
-          this.eldritchBlast(target)
-          true
+          (true, this.eldritchBlast(target))
         }
       case 2 =>
         if (this.distance(target) > 5) {
-          println("The target seems to be too far away to do this, try something else or move closer.")
-          false
+          (false, "The target seems to be too far away to do this, try something else or move closer.")
         } else {
-          this.hexBlade(target)
-          true
+          (true, this.hexBlade(target))
         }
     }
   }
