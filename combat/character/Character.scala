@@ -207,35 +207,32 @@ abstract class Character(
   protected def isSucceed(target: Character, atkRoll: Int): Boolean =
     atkRoll >= target.armorClass
 
-  protected def drinkPotion(): Boolean = {
+  protected def drinkPotion(): (Boolean, String) = {
     if (this.potionVials > 0) {
       this.currentHp += math.min(
         this.maxHp - this.currentHp,
         this.diceSet.roll(4)(this.diceSet.d4) + 4
       )
-      println(s"Drank potion, remaining HP is: ${this.remainingHp}")
-      true
+      (true, s"Drank potion, remaining HP is: ${this.remainingHp}")
     } else {
-      println("Oh no! There's no more potion left!")
-      false
+      (false, "Oh no! There's no more potion left!")
     }
   }
 
-  protected def callAction(target: Character, n: Int): Boolean
+  protected def callAction(target: Character, n: Int): (Boolean, String)
 
   /** Different character has different attack patterns/options.
    *
    * Look for this in specific character classes. */
-  def action(target: Character, n: Int): Boolean = {
+  def action(target: Character, n: Int): String = {
     if (this.remainingActions > 0) {
-      val acted = this.callAction(target, n)
+      val (acted, shoutOut) = this.callAction(target, n)
       if (acted) {
         this.remainingActions -= 1
-        true
-      } else false
+      }
+      shoutOut
     } else {
-      println("You have used up your actions in this turn!")
-      false
+      "You have used up your actions in this turn!"
     }
   }
 
@@ -248,7 +245,7 @@ abstract class Character(
    * the position exists and not occupied.
    *
    * @param destination a position on the HexaGrid board. */
-  def moveToward(destination: HexaGridPos): Boolean = {
+  def moveToward(destination: HexaGridPos): String = {
     val distance = this.currentPosition.distance(destination) * 5
     if (distance < this.remainingSpeed && this.board.elementAt(destination).isEmpty) {
       if (this.race.bonusSpeed >= distance)
@@ -258,11 +255,8 @@ abstract class Character(
       }
       this.board.swap(this.currentPosition, destination)
       this.currentPosition = destination
-      true
-    } else {
-      println("This position is either too far away, not available or not exist in this board.")
-      false
-    }
+      s"${this.name} spent $distance speed and moved to $destination"
+    } else "This position is either too far away, not available or not exist in this board."
   }
 
   protected def remainingSpeed: Int = this.remainingMovementSpeed + this.race.bonusSpeed
@@ -291,7 +285,7 @@ abstract class Character(
       .mkString("\n")
   }
 
-  def checkStatus(): String = {
+  def checkStatus: String = {
     s"$this, level ${this.level}\n" +
       s"You look ${this.status}\n" +
       s"Remaining HP: ${this.remainingHp}\n" +
@@ -300,7 +294,7 @@ abstract class Character(
       s"Current location: ${this.currentPosition}"
   }
 
-  def checkTarget(target: Character): String = target.status
+  def checkTarget(target: Character): String = s"${target.name} looks ${target.status}"
 
   /** Use at the beginning of a combat to determine the order of turns. */
   def initiativeRoll: Int = {
