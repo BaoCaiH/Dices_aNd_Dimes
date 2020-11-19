@@ -17,28 +17,16 @@ class HexBlade(
   ) {
   override val classBranch: String = "Hexblade"
 
-  private def meleeOrRange: Int = this.stat("cha")
+  override protected def meleeOrRange(mOR: String): Int = math.max(this.stat("cha"), super.meleeOrRange(mOR))
 
   private def hexBlade(target: Character): Unit = {
     val atkDice = this.attackRoll(this.hasAdvantage("melee"))
-    val atkRoll = atkDice + this.meleeOrRange + this.proficiencyBonus
+    val atkRoll = atkDice + this.meleeOrRange("melee") + this.proficiencyBonus
     println(s"Attack roll: $atkRoll")
     if (this.isSucceed(target, atkRoll)) {
       println(s"An enormous blade materialized on ${this.name}'s hands, he swung it directly at ${target.name}'s torso. That must did some damages!")
-      this.inflictDmg(target, this.diceSet.roll(2)(this.diceSet.d6) + this.meleeOrRange + this.isCriticalHit(atkDice, this.diceSet.d6) * 2, "slashing")
+      this.inflictDmg(target, this.diceSet.roll(2)(this.diceSet.d6) + this.meleeOrRange("melee") + this.isCriticalHit(atkDice, this.diceSet.d6) * 2, "slashing")
     } else println(s"An enormous blade materialized on ${this.name}'s hands, but the sheer weight seems to be too much for him to handle, he missed...")
-  }
-
-  override protected def eldritchBlast(target: Character): Unit = {
-    for (_ <- 0 to ((this.level - 5) / 6) + 1) {
-      val atkDice = this.attackRoll(this.hasAdvantage("range"))
-      val atkRoll = atkDice + this.spellAttack
-      println(s"Attack roll: $atkRoll")
-      if (this.isSucceed(target, atkRoll)) {
-        println(s"A blast struct ${target.name} like a rhino!")
-        this.inflictDmg(target, this.diceSet.roll(this.diceSet.d12) + this.meleeOrRange + this.isCriticalHit(atkDice, this.diceSet.d12), "force")
-      } else println("A blast beamed ahead like a mad beast, but it missed...")
-    }
   }
 
   protected def callAction(target: Character, n: Int): Boolean = {
@@ -63,17 +51,4 @@ class HexBlade(
         }
     }
   }
-
-  //  override def action(target: Character, n: Int): Boolean = {
-  //    if (this.remainingActions > 0) {
-  //      val acted = this.callAction(target, n)
-  //      if (acted) {
-  //        this.remainingActions -= 1
-  //        true
-  //      } else false
-  //    } else {
-  //      println("You have used up your actions in this turn!")
-  //      false
-  //    }
-  //  }
 }
