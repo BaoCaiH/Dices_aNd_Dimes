@@ -274,7 +274,7 @@ abstract class Character(
    * @param destination a position on the HexaGrid board. */
   def moveToward(destination: HexaGridPos): String = {
     val distance = this.currentPosition.distance(destination) * 5
-    if (distance < this.remainingSpeed && this.board.elementAt(destination).isEmpty) {
+    if (distance < this.remainingSpeed && this.board.possibleElementAt(destination).isDefined && this.board.elementAt(destination).isEmpty) {
       if (this.race.bonusSpeed >= distance)
         this.race.bonusSpeed -= distance
       else {

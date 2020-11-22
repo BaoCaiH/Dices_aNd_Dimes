@@ -3,7 +3,7 @@ package combat.character
 object constants {
   val statsRefer = Vector("str", "dex", "con", "int", "wis", "cha")
   val initialStatsBonus: Map[String, Int] = statsRefer.zip(Vector(0, 0, 0, 0, 0, 0)).toMap
-  val abilitiesToStat = Map(
+  val abilitiesToStat: Map[String, String] = Map(
     "acrobatic" -> "dex",
     "animal handling" -> "wis",
     "arcana" -> "int",
@@ -22,7 +22,7 @@ object constants {
     "sleight of hand" -> "dex",
     "stealth" -> "dex",
     "survival" -> "wis"
-  )
+  ).withDefaultValue("none")
   val abilities = Vector(
     "acrobatic",
     "animal handling",
