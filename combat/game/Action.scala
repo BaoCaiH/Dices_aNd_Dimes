@@ -28,7 +28,7 @@ class Action(val input: String) {
   }
 
   private def isCharacterName(board: HexaGrid, name: String): Boolean = {
-    board.allCharacters.map(_.name).contains(name)
+    board.allCharacters.map(_.name.toLowerCase).contains(name)
   }
 
   def execute(actor: Character, board: HexaGrid): String = {
@@ -61,7 +61,7 @@ class Action(val input: String) {
             "Invalid target"
           } else {
             val targetCharacter = board.allCharacters
-              .filter(_.name == targetName)
+              .filter(_.name.toLowerCase == targetName)
               .apply(0)
             actor.action(targetCharacter, actionNumber)
           }
@@ -75,7 +75,7 @@ class Action(val input: String) {
           val y = this.optionStringToNumber(this.context.lift(2))
           if (this.isCharacterName(board, optionX)) {
             val targetCharacter = board.allCharacters
-              .filter(_.name == optionX)
+              .filter(_.name.toLowerCase == optionX)
               .apply(0)
             actor.distance(targetCharacter).toString
           } else {
@@ -95,7 +95,7 @@ class Action(val input: String) {
             } else "Wrong ability name."
             case _ =>
               if (this.isCharacterName(board, what)) {
-                val targetStatus = actor.checkTarget(board.allCharacters.filter(_.name == what)(0))
+                val targetStatus = actor.checkTarget(board.allCharacters.filter(_.name.toLowerCase == what)(0))
                 s"$what looks $targetStatus"
               } else {
                 if (statsRefer.contains(what)) {
@@ -103,6 +103,8 @@ class Action(val input: String) {
                 } else "Wrong stats abbreviation."
               }
           }
+        case "next" => "next"
+        case "end" => "end"
         case _ => "Invalid command."
       }
     }

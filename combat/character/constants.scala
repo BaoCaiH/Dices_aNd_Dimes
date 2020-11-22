@@ -1,8 +1,11 @@
 package combat.character
 
+import combat.hexaGrid.HexaGridPos
+
 object constants {
   val statsRefer = Vector("str", "dex", "con", "int", "wis", "cha")
-  val initialStatsBonus: Map[String, Int] = statsRefer.zip(Vector(0, 0, 0, 0, 0, 0)).toMap
+  val boostedStatsBonus: Map[String, Int] = statsRefer.zip(Vector(99, 99, 99, 99, 99, 99)).toMap
+  val boosterTile: HexaGridPos = HexaGridPos(13, 5)
   val abilitiesToStat: Map[String, String] = Map(
     "acrobatic" -> "dex",
     "animal handling" -> "wis",

@@ -112,6 +112,15 @@ class HexaGrid(val width: Int, val height: Int) {
     this (position2) = temp
   }
 
+  def moveCharacters(position1: HexaGridPos, position2: HexaGridPos): Unit = {
+    require(this.contains(position1), "First position does not exist in the hexagon grid.")
+    require(this.contains(position2), "Second position does not exist in the hexagon grid.")
+    require(this (position1).character.isDefined, "There's no character in this position to move")
+    val temp = this (position1).character.get
+    this (position1).clear()
+    this (position2).addCharacter(temp)
+  }
+
   def allCharacters: Vector[Character] = {
     this.allHexagons
       .filter(_.character.isDefined)

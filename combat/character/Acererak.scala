@@ -7,7 +7,7 @@ object Acererak extends Character(
   "Acererak",
   new Undead,
   Vector[Int](13, 16, 20, 27, 21, 20),
-  HexaGridPos(12, 12),
+  HexaGridPos(13, 7),
   GameBoard,
   285,
   335000
@@ -20,7 +20,7 @@ object Acererak extends Character(
   //  override val dmgImmunity: Vector[String] = Vector[String]("normal")
   //  override val dmgResistant: Vector[String] = Vector[String]("cold", "lightning")
   private var deathFingers = 2
-  private var deathWords = 1
+  private var deathWords = 2
   this.dmgImmunity = this.dmgImmunity ++ Vector[String]("normal")
   this.dmgResistant = this.dmgResistant ++ Vector[String]("cold", "lightning")
 
