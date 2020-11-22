@@ -167,6 +167,19 @@ abstract class Character(
     actualDmg
   }
 
+  protected def heal(target: Character, hp: Int): Unit = {
+    println(s"\tAttempt to heal $hp hp(s) to ${target.name}")
+    val actualHp = target.receiveHp(hp)
+    println(s"\t${target.name} received $actualHp hp(s)")
+    println(s"\t${target.name} looks ${target.status}")
+  }
+
+  protected def receiveHp(hp: Int): Int = {
+    var actualHp = math.min(hp, this.maxHp - this.currentHp)
+    this.currentHp += actualHp
+    actualHp
+  }
+
   protected def checkRolls: Int = this.diceSet.roll(this.diceSet.d20)
 
   protected def checkRolls(withAdvantage: Int): Int = {
