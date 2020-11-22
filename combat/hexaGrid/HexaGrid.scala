@@ -1,5 +1,7 @@
 package combat.hexaGrid
 
+import combat.character.Character
+
 import scala.collection.mutable
 
 class HexaGrid(val width: Int, val height: Int) {
@@ -66,7 +68,7 @@ class HexaGrid(val width: Int, val height: Int) {
     this.contents(position.x)(position.y) = newElement
   }
 
-  private def possibleElementAt(position: HexaGridPos): Option[Hexagon] =
+  def possibleElementAt(position: HexaGridPos): Option[Hexagon] =
     if (this.contains(position)) Some(this (position)) else None
 
 
@@ -108,6 +110,12 @@ class HexaGrid(val width: Int, val height: Int) {
     val temp = this (position1)
     this (position1) = this (position2)
     this (position2) = temp
+  }
+
+  def allCharacters: Vector[Character] = {
+    this.allHexagons
+      .filter(_.character.isDefined)
+      .map(_.character.get)
   }
 
   override def toString: String = s"Board of width of ${this.width} and height of ${this.height} units."

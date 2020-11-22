@@ -5,10 +5,13 @@ class Tabaxi extends Race {
 
   override val abilityCheckProficiency: Vector[String] = Vector[String]("perception", "stealth")
 
-  def felineAgility(): Unit = {
+  def felineAgility(): String = {
     if (felineCapability > 0) {
       this.bonusSpeed = this.speed
       this.felineCapability -= 1
+      s"The cat went meow and ready to leap forward."
+    } else {
+      s"The cat is tired."
     }
   }
 
