@@ -24,7 +24,6 @@ abstract class Character(
   // However they were kept var because they make sense
   // in a fully developed game
   protected var staticStats: Map[String, Int] = statsRefer.zip(initialStat.take(6)).toMap
-  protected var temporaryStatsBonus: Map[String, Int] = initialStatsBonus.withDefaultValue(0)
   protected var maxHp: Int = initialHitPoint
   protected var temporaryHp: Int = 0
   protected var currentHp: Int = initialHitPoint
@@ -36,6 +35,7 @@ abstract class Character(
   protected var dmgImmunity: Vector[String] = Vector[String]()
   protected var dmgResistant: Vector[String] = Vector[String]()
   protected var potionVials: Int = 1
+  var temporaryStatsBonus: Map[String, Int] = Map[String, Int]().withDefaultValue(0)
   val classBranch: String
   //  val background: String
   //  val alignment: String // not needed at the moment
@@ -197,7 +197,7 @@ abstract class Character(
   protected def attackRoll(mOR: String): (Int, Int) = {
     val atkDice = this.attackRoll(this.hasAdvantage(mOR))
     val atkRoll = atkDice + this.meleeOrRange(mOR) + this.proficiencyBonus
-    println(s"Attack roll: $atkRoll")
+    println(s"\tAttack roll: $atkRoll")
     (atkDice, atkRoll)
   }
 
@@ -254,6 +254,7 @@ abstract class Character(
   def action(target: Character, n: Int): String = {
     if (this.remainingActions > 0) {
       val (acted, shoutOut) = this.callAction(target, n)
+      //      println(acted)
       if (acted) {
         this.remainingActions -= 1
       }
@@ -280,7 +281,7 @@ abstract class Character(
       else {
         this.remainingMovementSpeed -= (distance - this.race.bonusSpeed)
       }
-      this.board.swap(this.currentPosition, destination)
+      this.board.moveCharacters(this.currentPosition, destination)
       this.currentPosition = destination
       s"${this.name} spent $distance speed and moved to $destination"
     } else "This position is either too far away, not available or not exist in this board."
@@ -332,9 +333,9 @@ abstract class Character(
   /** Use at the beginning of a combat to determine the order of turns. */
   def initiativeRoll: Int = {
     this.initiative = this.diceSet.roll(this.diceSet.d20) + this.currentStatModifier("dex")
-    println(s"$this: ${this.initiative}")
+    println(s"\t$this initiative: ${this.initiative}")
     this.initiative
   }
 
-  override def toString: String = this.name + " the " + this.classBranch
+  override def toString: String = s"${this.name} (${this.race}) the ${this.classBranch}"
 }
