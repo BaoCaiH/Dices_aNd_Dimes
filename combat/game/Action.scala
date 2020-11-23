@@ -105,7 +105,7 @@ class Action(val input: String) {
             case _ =>
               if (this.isCharacterName(board, what)) {
                 val targetStatus = actor.checkTarget(board.allCharacters.filter(_.name.toLowerCase == what)(0))
-                s"$what looks $targetStatus"
+                s"$targetStatus"
               } else {
                 if (statsRefer.contains(what)) {
                   s"$what: ${actor.stat(what)}"
