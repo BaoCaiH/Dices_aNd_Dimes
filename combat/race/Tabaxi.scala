@@ -15,5 +15,12 @@ class Tabaxi extends Race {
     }
   }
 
+  override def helpMessage: String = {
+    val common = super.helpMessage
+    common + "\n" +
+      "Tabaxi's specific commands\n" +
+      "\tfeline agility: additional speed to this turn\n"
+  }
+
   override def toString: String = "Tabaxi"
 }

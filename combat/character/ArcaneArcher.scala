@@ -20,6 +20,13 @@ class ArcaneArcher(
   override val abilityCheckProficiency: Vector[String] = Vector[String]("acrobatic", "athletics", "arcane")
   private var homingShot: Int = 2
 
+  override def helpMessage: String = {
+    val common = super.helpMessage
+    common + "\n" +
+      "Arcane Archer's specific commands\n" +
+      "\taction 1 [target's name]: shoot magic arrows at a target\n"
+  }
+
   private def arcaneShot(target: Character): String = {
     val shots = this.level match {
       case l if l < 5 => 1

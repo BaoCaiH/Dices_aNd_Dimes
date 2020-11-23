@@ -12,5 +12,7 @@ trait Race {
 
   val abilityCheckProficiency: Vector[String] = Vector[String]()
 
+  def helpMessage: String = ""
+
   override def toString: String = "Outcast"
 }

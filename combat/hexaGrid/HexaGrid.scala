@@ -8,7 +8,7 @@ class HexaGrid(val width: Int, val height: Int) {
   val size: Int = (width + 1) * (height / 2) + (height % 2) * ((width / 2) + 1)
 
   private def placeHexagon(x: Int, y: Int): Hexagon = {
-    if (x <= 1 || x >= this.height - 2 || y == 0 || y == this.width - 1) Obstacle
+    if (x <= 1 || x >= this.width - 2 || y == 0 || y == this.height - 1) Obstacle
     else new Floor
   }
 

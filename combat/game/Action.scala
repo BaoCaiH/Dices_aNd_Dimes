@@ -47,10 +47,19 @@ class Action(val input: String) {
         case cat: Tabaxi => cat.felineAgility()
         case _ => "You are not a Tabaxi"
       }
-    } else if (command == "lay on hands") {
-      ""
-    } else if (command == "healing word") {
-      ""
+    } else if (command.startsWith("lay on hands")) {
+      val targetName = this.getContextString(4)
+      val actionNumber = this.optionStringToNumber(this.context.lift(3), 0)
+      if (!isCharacterName(board, targetName)) {
+        "Invalid target"
+      } else {
+        val targetCharacter = board.allCharacters
+          .filter(_.name.toLowerCase == targetName)
+          .apply(0)
+        actor match {
+          case paladin: Paladin => paladin.layOnHands(targetCharacter, actionNumber)
+        }
+      }
     } else {
       this.mainCommand match {
         case "action" =>
@@ -103,6 +112,7 @@ class Action(val input: String) {
                 } else "Wrong stats abbreviation."
               }
           }
+        case "help" => actor.helpMessage
         case "next" => "next"
         case "end" => "end"
         case _ => "Invalid command."

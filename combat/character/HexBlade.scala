@@ -17,6 +17,13 @@ class HexBlade(
   ) {
   override val classBranch: String = "Hexblade"
 
+  override def helpMessage: String = {
+    val common = super.helpMessage
+    common + "\n" +
+      "Hexblade's specific commands\n" +
+      "\taction 3 [target's name]: use hexed blade to slash target\n"
+  }
+
   override protected def meleeOrRange(mOR: String): Int = math.max(this.stat("cha"), super.meleeOrRange(mOR))
 
   private def hexBlade(target: Character): String = {
@@ -40,16 +47,16 @@ class HexBlade(
           (true, this.eldritchBlast(target))
         }
       case 2 =>
-        if (this.distance(target) > 5) {
-          (false, "The target seems to be too far away to do this, try something else or move closer.\n")
-        } else {
-          (true, this.hexBlade(target))
-        }
-      case 3 =>
         if (this.distance(target) > 60) {
           (false, "The target seems to be too far away to do this, try something else or move closer.\n")
         } else {
           (true, this.tollTheDead(target))
+        }
+      case 3 =>
+        if (this.distance(target) > 5) {
+          (false, "The target seems to be too far away to do this, try something else or move closer.\n")
+        } else {
+          (true, this.hexBlade(target))
         }
       case _ => (false, "Unknown action, try something else.\n")
     }
