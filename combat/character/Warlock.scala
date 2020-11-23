@@ -22,6 +22,7 @@ abstract class Warlock(
   val baseStatsProficiency: Vector[String] = Vector[String]("wis", "cha")
   val abilityCheckProficiency: Vector[String] = Vector[String]("deception", "intimidation")
 
+  /** Return help message tailored for classes and races. */
   override def helpMessage: String = {
     val common = super.helpMessage
     common + "\n" +

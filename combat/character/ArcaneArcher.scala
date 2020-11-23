@@ -20,6 +20,7 @@ class ArcaneArcher(
   override val abilityCheckProficiency: Vector[String] = Vector[String]("acrobatic", "athletics", "arcane")
   private var homingShot: Int = 2
 
+  /** Return help message tailored for classes and races. */
   override def helpMessage: String = {
     val common = super.helpMessage
     common + "\n" +

@@ -23,6 +23,7 @@ abstract class Bard(
   val abilityCheckProficiency: Vector[String] = Vector[String]("acrobatic", "deception", "performance")
   protected var healing: Int = 10
 
+  /** Return help message tailored for classes and races. */
   override def helpMessage: String = {
     val common = super.helpMessage
     common + "\n" +
@@ -34,8 +35,10 @@ abstract class Bard(
 
   protected def spellSave: Int = 8 + this.spellAttack
 
-  /** This spell wrack the target with pain. Target must make a Wisdom saving throw.
-   * On a failed save, target takes 5d6 psychic damage. */
+  //  /** This spell wrack the target with pain. Target must make a Wisdom saving throw.
+  //   * On a failed save, target takes 5d6 psychic damage.
+  //   *
+  //   * @param target a character. */
   protected def dissonantWhisper(target: Character): String = {
     val saving = target.savingThrow("wis")
     if (this.spellSave > saving) {

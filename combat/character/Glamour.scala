@@ -17,6 +17,7 @@ class Glamour(
   ) {
   override val classBranch: String = "Glamour"
 
+  /** Return help message tailored for classes and races. */
   override def helpMessage: String = {
     val common = super.helpMessage
     common + "\n" +
@@ -26,8 +27,10 @@ class Glamour(
 
   override protected def meleeOrRange(mOR: String): Int = math.max(this.stat("cha"), super.meleeOrRange(mOR))
 
-  /** If attack roll is successful, pierce the target with a rapier sword (method inflictDmg).
-   * If not successful, the target is not affected. */
+  //  /** If attack roll is successful, pierce the target with a rapier sword (method inflictDmg).
+  //   * If not successful, the target is not affected.
+  //   *
+  //   * @param target a character. */
   private def rapier(target: Character): String = {
     val (atkDice, atkRoll): (Int, Int) = this.attackRoll("melee")
     if (this.isSucceed(target, atkRoll)) {

@@ -109,6 +109,9 @@ object Acererak extends Character(
     potentialTargets(this.diceSet.roll(this.diceSet.d100) % potentialTargets.length)
   }
 
+  /** Return an action string.
+   *
+   * Take a random action to a random character. */
   def takeTurn(): String = {
     this.action(this.randomTarget, this.randomAction)
   }
