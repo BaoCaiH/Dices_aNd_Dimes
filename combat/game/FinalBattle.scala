@@ -13,8 +13,8 @@ object FinalBattle extends App {
   val boss = Acererak
   val player1 = new ArcaneArcher("Alphonse", new Elf, Vector(19, 20, 15, 16, 11, 10), HexaGridPos(5, 7), board, 110)
   val player2 = new HexBlade("Riptide", new Tiefling, Vector(16, 20, 16, 14, 16, 20), HexaGridPos(9, 3), board, 95)
-  val player3 = new HexBlade("Cottoni", new Tabaxi, Vector(8, 16, 14, 11, 12, 20), HexaGridPos(17, 3), board, 85)
-  val player4 = new HexBlade("Andre", new Halfling, Vector(16, 16, 14, 8, 12, 16), HexaGridPos(21, 7), board, 100)
+  val player3 = new Glamour("Cottoni", new Tabaxi, Vector(8, 16, 14, 11, 12, 20), HexaGridPos(17, 3), board, 85)
+  val player4 = new OathOfDevotion("Andre", new Halfling, Vector(16, 16, 14, 8, 12, 16), HexaGridPos(21, 7), board, 100)
 
   board(HexaGridPos(5, 7)).addCharacter(player1)
   board(HexaGridPos(9, 3)).addCharacter(player2)

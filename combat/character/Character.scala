@@ -36,6 +36,24 @@ abstract class Character(
   protected var dmgResistant: Vector[String] = Vector[String]()
   protected var potionVials: Int = 1
   var temporaryStatsBonus: Map[String, Int] = Map[String, Int]().withDefaultValue(0)
+
+  def helpMessage: String =
+    "The following common commands are available:\n" +
+      "\taction 0 [any target's name]: drink potion\n" +
+      "\taction [action number] [target's name]: perform action on a target\n" +
+      "\tmove [x coordinate] [y coordinate]: move to a new position\n" +
+      "\tdistance [x coordinate] [y coordinate]: distance to a position\n" +
+      "\tdistance [target's name]: distance to a target\n" +
+      "\tcheck status: check own status\n" +
+      "\tcheck locations: check other characters' locations\n" +
+      "\tcheck [stat abbreviation]: check stat modifiers (which affect attacks)\n" +
+      "\tcheck saving [stat abbreviation]: check stat saving (which affect saving throws)\n" +
+      "\tcheck [ability name]: check ability to perform tasks (mostly off combat)\n" +
+      "\tcheck [target's name]: check target's appearance relatively to full health\n" +
+      "\tnext: next character's turn\n" +
+      "\tend: end the current combat, which you shouldn't, please...\n" +
+      this.race.helpMessage
+
   val classBranch: String
   //  val background: String
   //  val alignment: String // not needed at the moment

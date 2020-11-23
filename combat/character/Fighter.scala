@@ -24,6 +24,14 @@ abstract class Fighter(
   protected var winds: Int = 1
   protected var surge: Int = 1
 
+  override def helpMessage: String = {
+    val common = super.helpMessage
+    common + "\n" +
+      "Fighter's specific commands\n" +
+      "\tsecond wind: self heal\n" +
+      "\taction surge: additional action on this current turn\n"
+  }
+
   def secondWind(): String = {
     if (this.winds > 0) {
       val additionalHp = this.diceSet.roll(this.diceSet.d10) + this.level
@@ -41,21 +49,4 @@ abstract class Fighter(
       s"Adrenaline level surged in ${this.name}'s veins, ${this.name} can do this all day, remaining action is: ${this.remainingActions}\n"
     } else "Nothing happened in a while... what a let down...\n"
   }
-
-  //  override def action(target: Character, n: Int): Boolean = {
-  //    if (this.remainingActions > 0 && n < 8) {
-  //      val acted = this.callAction(target, n)
-  //      if (acted) {
-  //        this.remainingActions -= 1
-  //        true
-  //      } else false
-  //    } else if (n == 8) {
-  //      this.secondWind()
-  //    } else if (n == 9) {
-  //      this.actionSurge()
-  //    } else {
-  //      println("You have used up your actions in this turn!")
-  //      false
-  //    }
-  //  }
 }

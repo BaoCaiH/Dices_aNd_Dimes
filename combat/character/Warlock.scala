@@ -22,6 +22,14 @@ abstract class Warlock(
   val baseStatsProficiency: Vector[String] = Vector[String]("wis", "cha")
   val abilityCheckProficiency: Vector[String] = Vector[String]("deception", "intimidation")
 
+  override def helpMessage: String = {
+    val common = super.helpMessage
+    common + "\n" +
+      "Warlock's specific commands\n" +
+      "\taction 1 [target's name]: eldritch blast to target's face\n" +
+      "\taction 2 [target's name]: create a disgusting sound in target's head\n"
+  }
+
   protected def spellSave: Int = 8 + this.spellAttack
 
   protected def spellAttack: Int = this.proficiencyBonus + this.stat("cha")
