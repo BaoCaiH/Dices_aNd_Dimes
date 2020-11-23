@@ -5,6 +5,7 @@ import combat.character.constants.boostedStatsBonus
 object Booster extends Floor {
   private var boost = 1
 
+  /** Return whether the character is boosted. */
   def boostCharacter(): Boolean = {
     if (this.character.isDefined && this.boost > 0) {
       this.boost -= 1

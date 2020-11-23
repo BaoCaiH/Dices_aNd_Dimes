@@ -24,6 +24,7 @@ abstract class Paladin(
   protected var healingPool: Int = this.level * 5 //a pool of healing power that can be used for Lay On Hands until this pool is run out.
   protected var thunderHits: Int = 6 //can use Thunderous Smite spell up to 6 times.
 
+  /** Return help message tailored for classes and races. */
   override def helpMessage: String = {
     val common = super.helpMessage
     common + "\n" +
@@ -32,8 +33,10 @@ abstract class Paladin(
       "\taction 1 [target's name]: smite a target with a thunderous strike\n"
   }
 
-  /** Heal this character or another character with an input of HP, only up to the max HP level of the character.
-   * Amount of HP input is deducted to the healing pool. */
+  //  /** Heal this character or another character with an input of HP, only up to the max HP level of the character.
+  //   * Amount of HP input is deducted to the healing pool.
+  //   *
+  //   * @param target a character. */
   def layOnHands(target: Character, hp: Int): String = {
     val healableHp = math.min(hp, this.healingPool)
     if (this.healingPool > 0 && target == this) {

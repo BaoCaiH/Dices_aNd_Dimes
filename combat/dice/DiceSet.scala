@@ -28,24 +28,44 @@ class DiceSet {
     repeat(n, dice).sum
   }
 
+  /** Return the result of some dice rolls.
+   *
+   * @param n    number of rolls.
+   * @param dice which dice to roll. */
   def roll(n: Int)(dice: Dice): Int = {
     rollNDice(n, dice)
   }
 
+  /** Return the result of 1 dice roll.
+   *
+   * @param dice which dice to roll. */
   def roll(dice: Dice): Int = {
     roll(1)(dice)
   }
 
+  /** Return the result of an advantage dice roll.
+   *
+   * Roll twice and take the larger.
+   *
+   * @param dice which dice to roll. */
   def rollAdvantage(dice: Dice): Int = {
     println("Advantage, take the larger roll!")
     repeat(2, dice).max
   }
 
+  /** Return the result of an disadvantage dice roll.
+   *
+   * Roll twice and take the smaller.
+   *
+   * @param dice which dice to roll. */
   def rollDisadvantage(dice: Dice): Int = {
     println("Disadvantage, take the smaller roll...")
     repeat(2, dice).min
   }
 
+  /** Return result of a blessing roll.
+   *
+   * Roll d4. */
   def blessing: Int = roll(d4)
 
   def apply(dice: Dice): Int = this.roll(dice)

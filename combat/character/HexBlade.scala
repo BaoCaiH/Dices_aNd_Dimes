@@ -17,6 +17,7 @@ class HexBlade(
   ) {
   override val classBranch: String = "Hexblade"
 
+  /** Return help message tailored for classes and races. */
   override def helpMessage: String = {
     val common = super.helpMessage
     common + "\n" +

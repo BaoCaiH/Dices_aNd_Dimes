@@ -11,6 +11,7 @@ import scala.io.StdIn.readLine
 object FinalBattle extends App {
   val board = GameBoard
   val boss = Acererak
+  // Normal mode
   val player1 = new ArcaneArcher("Alphonse", new Elf, Vector(19, 20, 15, 16, 11, 10), HexaGridPos(5, 7), board, 110)
   val player2 = new HexBlade("Riptide", new Tiefling, Vector(16, 20, 16, 14, 16, 20), HexaGridPos(9, 3), board, 95)
   val player3 = new Glamour("Cottoni", new Tabaxi, Vector(8, 16, 14, 11, 12, 20), HexaGridPos(17, 3), board, 85)
@@ -24,6 +25,14 @@ object FinalBattle extends App {
   board(boosterTile) = Booster
 
   val players = Vector(player1, player2, player3, player4)
+
+  // Hard mode
+  //  val player1 = new ArcaneArcher("Alphonse", new Elf, Vector(19, 20, 15, 16, 11, 10), HexaGridPos(5, 7), board, 110)
+  //
+  //  board(HexaGridPos(5, 7)).addCharacter(player1)
+  //  board(HexaGridPos(13, 7)).addCharacter(boss)
+  //
+  //  val players = Vector(player1)
 
   val characters = (this.players ++ Vector(boss))
     .map(c => (c, c.initiativeRoll))

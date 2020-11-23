@@ -21,6 +21,7 @@ class OathOfDevotion(
 
   override protected def meleeOrRange(mOR: String): Int = math.max(this.stat("cha"), super.meleeOrRange(mOR))
 
+  /** Return help message tailored for classes and races. */
   override def helpMessage: String = {
     val common = super.helpMessage
     common + "\n" +
@@ -28,9 +29,11 @@ class OathOfDevotion(
       "\taction 2 [target's name]: smite a target with a divine strike\n"
   }
 
-  /** If attack roll is successful, deal radiant damage to the target.
-   * If not successful, the target is not affected.
-   * One Divine Smite spell needs one spell slot. */
+  //  /** If attack roll is successful, deal radiant damage to the target.
+  //   * If not successful, the target is not affected.
+  //   * One Divine Smite spell needs one spell slot.
+  //   *
+  //   * @param target a character. */
   protected def divineSmite(target: Character): String = {
     val hits = this.level match {
       case someLevel if someLevel < 5 => 1

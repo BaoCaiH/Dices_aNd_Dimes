@@ -37,6 +37,7 @@ abstract class Character(
   protected var potionVials: Int = 1
   var temporaryStatsBonus: Map[String, Int] = Map[String, Int]().withDefaultValue(0)
 
+  /** Return help message tailored for classes and races. */
   def helpMessage: String =
     "The following common commands are available:\n" +
       "\taction 0 [any target's name]: drink potion\n" +
@@ -64,24 +65,39 @@ abstract class Character(
   val baseStatsProficiency: Vector[String]
   val abilityCheckProficiency: Vector[String]
 
+  /** Return the max speed of this character. */
   def speed: Int = this.race.speed
 
+  /** Return the immunities of this character. */
   def immunities: Vector[String] = this.dmgImmunity ++ this.race.dmgImmunity
 
+  /** Return the resistance of this character. */
   def resistances: Vector[String] = this.dmgResistant ++ this.race.dmgResistant
 
+  /** Return the proficiency of this character on a specific stat.
+   *
+   * @param statAbbreviation a correct abbreviation of one of the stat. */
   def statProficiency(statAbbreviation: String): Int =
     if (this.baseStatsProficiency.contains(statAbbreviation)) this.proficiencyBonus else 0
 
+  /** Return the proficiency of this character on a specific ability.
+   *
+   * @param abilityName a correct ability name. */
   def abilityProficiency(abilityName: String): Int =
     if ((this.race.abilityCheckProficiency ++ this.abilityCheckProficiency)
       .contains(abilityName)) this.proficiencyBonus
     else 0
 
+  /** Return vital status of this character. */
   def isAlive: Boolean = this.remainingHp > 0
 
+  /** Return whether this character is at full health. */
   def isFullHp: Boolean = this.remainingHp == this.maxHp
 
+  /** Return the resilient status of a character.
+   *
+   * A character is resilient if its remaining HP
+   * is over 100 regardless of what its max HP is. */
   def isResilient: Boolean = this.remainingHp > 100
 
   protected def currentStat: Map[String, Int] =
@@ -107,8 +123,12 @@ abstract class Character(
   }
 
   // The following methods are to check the stats of the character
+  /** Return the modifier of this character on a specific stat.
+   *
+   * @param statAbbreviation a correct abbreviation of one of the stat. */
   def stat(statAbbreviation: String): Int = this.currentStatModifier(statAbbreviation)
 
+  /** Return the proficiency bonus based on level. */
   def proficiencyBonus: Int = {
     this.level match {
       case x if x < 5 => 2
@@ -119,9 +139,15 @@ abstract class Character(
     }
   }
 
+  /** Return the saving of this character on a specific stat.
+   *
+   * @param statAbbreviation a correct abbreviation of one of the stat. */
   def statSaving(statAbbreviation: String): Int =
     this.currentStatModifier(statAbbreviation) + this.statProficiency(statAbbreviation)
 
+  /** Return the modifier of this character on a specific ability.
+   *
+   * @param abilityName a correct ability name. */
   def abilityCheck(abilityName: String): Int =
     this.abilityProficiency(abilityName) + this.currentStatModifier(abilitiesToStat(abilityName))
 
@@ -158,14 +184,15 @@ abstract class Character(
    * (yes, darn it, it's pounds not kgs). */
   def carryingCapacity: Int = this.currentStat("str") * 15
 
-  /** Returns the current HP of a character.
-   *
-   * This includes temporary HP gained from spells and items. */
+  //  Returns the current HP of a character.
+  //  This includes temporary HP gained from spells and items.
   protected def remainingHp: Int = this.currentHp + this.temporaryHp
 
   //  /** Total remaining HP, including temporary HP. */
   //  def hp: Int = this.remainingHp
 
+  // Inflict damage on another character.
+  // Use the helper function takeDmg
   protected def inflictDmg(target: Character, dmg: Int, dmgType: String): Unit = {
     println(s"\tAttempt to inflict $dmg $dmgType damage(s) to ${target.name}")
     val actualDmg = target.takeDmg(dmg, dmgType)
@@ -173,6 +200,8 @@ abstract class Character(
     println(s"\t${target.name} looks ${target.status}")
   }
 
+  // Determine how many actual dmg the character is taking.
+  // Immunities and resistances are taken into account
   protected def takeDmg(dmg: Int, dmgType: String): Int = {
     var actualDmg = dmg
     if (this.immunities.contains(dmgType)) actualDmg *= 0
@@ -185,6 +214,8 @@ abstract class Character(
     actualDmg
   }
 
+  // Heal a character with n HP
+  // Use the helper function receiveHp
   protected def heal(target: Character, hp: Int): Unit = {
     println(s"\tAttempt to heal $hp hp(s) to ${target.name}")
     val actualHp = target.receiveHp(hp)
@@ -192,12 +223,14 @@ abstract class Character(
     println(s"\t${target.name} looks ${target.status}")
   }
 
+  // Determine how much HP to take in, it cannot go higher than max HP
   protected def receiveHp(hp: Int): Int = {
     var actualHp = math.min(hp, this.maxHp - this.currentHp)
     this.currentHp += actualHp
     actualHp
   }
 
+  // D20 is the most common roll, checks, savings and attack all use it
   protected def checkRolls: Int = this.diceSet.roll(this.diceSet.d20)
 
   protected def checkRolls(withAdvantage: Int): Int = {
@@ -236,6 +269,11 @@ abstract class Character(
     true
   }
 
+  /** Return the saving throw on a specific stat.
+   *
+   * @param statAbbreviation a correct abbreviation of one of the stat.
+   * @param withAdvantage    either with advantage (1), disadvantage (-1) or normal (0).
+   * @param withBlessing     true or false, usually received from other characters. */
   def savingThrow(statAbbreviation: String,
                   withAdvantage: Int = 0,
                   withBlessing: Boolean = false): Int = {
@@ -264,11 +302,18 @@ abstract class Character(
     }
   }
 
-  protected def callAction(target: Character, n: Int): (Boolean, String)
-
   /** Different character has different attack patterns/options.
    *
    * Look for this in specific character classes. */
+  protected def callAction(target: Character, n: Int): (Boolean, String)
+
+  /** Return the action shout out string.
+   *
+   * Deplete the remaining action if succeeded.
+   * Throw message if there's no action left.
+   *
+   * @param target a character
+   * @param n      the number refer to a taxing action defined in callAction. */
   def action(target: Character, n: Int): String = {
     if (this.remainingActions > 0) {
       val (acted, shoutOut) = this.callAction(target, n)
@@ -305,6 +350,16 @@ abstract class Character(
     } else "This position is either too far away, not available or not exist in this board."
   }
 
+  /** Move toward a desirable destination.
+   *
+   * Return true if the movement is possible
+   * and false otherwise.
+   * Character can only move to a certain location
+   * if there's sufficient speed remaining,
+   * the position exists and not occupied.
+   *
+   * @param x a appropriate x coordinate.
+   * @param y a appropriate y coordinate */
   def moveToward(x: Int, y: Int): String = this.moveToward(HexaGridPos(x, y))
 
   protected def remainingSpeed: Int = this.remainingMovementSpeed + this.race.bonusSpeed
@@ -316,10 +371,20 @@ abstract class Character(
 
   protected def replenishAction(): Unit = this.remainingActions = this.actions
 
+  /** Return the distance to another character.
+   *
+   * @param target a character. */
   def distance(target: Character): Int = this.currentPosition.distance(target.currentPosition) * 5
 
+  /** Return the distance to a position on the grid.
+   *
+   * @param position a appropriate HexaGridPos. */
   def distance(position: HexaGridPos): Int = this.currentPosition.distance(position) * 5
 
+  /** Return the distance to a pair of coordinate.
+   *
+   * @param x a appropriate x coordinate.
+   * @param y a appropriate y coordinate. */
   def distance(x: Int, y: Int): Int = this.distance(HexaGridPos(x, y))
 
   def newTurn(): Unit = {
@@ -327,6 +392,7 @@ abstract class Character(
     this.replenishAction()
   }
 
+  /** Check where other characters are in the board. */
   def checkOtherCharacterPosition: String = {
     this.board
       .allHexagons
@@ -337,6 +403,7 @@ abstract class Character(
       .mkString("\n")
   }
 
+  /** Check some common stats of the character. */
   def checkStatus: String = {
     s"$this, level ${this.level}\n" +
       s"You look ${this.status}\n" +
@@ -346,6 +413,7 @@ abstract class Character(
       s"Current location: ${this.currentPosition}"
   }
 
+  /** Check the target's appearance relatively to healthy condition. */
   def checkTarget(target: Character): String = s"${target.name} looks ${target.status}"
 
   /** Use at the beginning of a combat to determine the order of turns. */

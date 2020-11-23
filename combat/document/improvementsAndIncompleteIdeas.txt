@@ -1,0 +1,23 @@
+Improvements:
+
+Immediately the game is not very sophisticated. There are a bunch of unnecessary implementation
+and sloppy implementation as well because we needed to think as we go.
+
+Variables and methods could have been handled with more delicate since a few of them are unnecessarily exposed as public.
+Which is not ideal but we have no good idea at the time.
+
+Class and Race could be implemented differently, maybe, we have no good idea there too.
+
+Ideas:
+
+Skill/Action could have been handled entirely differently as a separate class and the characters can pick
+from the pool which ever is suitable for them.
+
+Same for non-taxing action such as action surge could have been a different class, as FreeAction.
+
+Add actual healing potion item instead of a decreasing variable.
+
+Status could be another separate class as well instead of just String. The cold status
+is just an attempt to make the crude game more colourful.
+
+Boosters are real and can be used more. Like traps, a negative booster.
