@@ -43,8 +43,8 @@ abstract class Bard(
     val saving = target.savingThrow("wis")
     if (this.spellSave > saving) {
       this.inflictDmg(target, this.diceSet.roll(5)(this.diceSet.d6), "psychic")
-      s"${this.name} pointed at ${target.name}, ${target.name} heard a terrible sound coming from an unknown source, it's painful!\n"
-    } else s"${this.name} pointed at ${target.name}, ${target.name} grinned as if the attack was anticipated...\n"
+      s"${this.name} whispered at ${target.name}, ${target.name} heard a terrible sound coming from an unknown source, it's painful!\n"
+    } else s"${this.name} whispered at ${target.name}, ${target.name} grinned as if the attack was anticipated...\n"
   }
 
 }

@@ -49,7 +49,7 @@ abstract class Character(
       "\tcheck locations: check other characters' locations\n" +
       "\tcheck [stat abbreviation]: check stat modifiers (which affect attacks)\n" +
       "\tcheck saving [stat abbreviation]: check stat saving (which affect saving throws)\n" +
-      "\tcheck [ability name]: check ability to perform tasks (mostly off combat)\n" +
+      "\tcheck ability [ability name]: check ability to perform tasks (mostly off combat)\n" +
       "\tcheck [target's name]: check target's appearance relatively to full health\n" +
       "\tnext: next character's turn\n" +
       "\tend: end the current combat, which you shouldn't, please...\n" +

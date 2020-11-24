@@ -5,12 +5,9 @@ import combat.character.constants.boosterTile
 import combat.hexaGrid._
 import combat.race._
 
-import scala.annotation.tailrec
-import scala.io.StdIn.readLine
-
-object FinalBattle extends App {
-  val board = GameBoard
-  val boss = Acererak
+class FinalBattleSetting {
+  val board: HexaGrid = GameBoard
+  val boss: Acererak.type = Acererak
   // Normal mode
   val player1 = new ArcaneArcher("Alphonse", new Elf, Vector(19, 20, 15, 16, 11, 10), HexaGridPos(5, 7), board, 110)
   val player2 = new HexBlade("Riptide", new Tiefling, Vector(16, 20, 16, 14, 16, 20), HexaGridPos(9, 3), board, 95)
@@ -34,14 +31,14 @@ object FinalBattle extends App {
   //
   //  val players = Vector(player1)
 
-  val characters = (this.players ++ Vector(boss))
+  val characters: Vector[Character] = (this.players ++ Vector(boss))
     .map(c => (c, c.initiativeRoll))
     .sortBy(_._2)(Ordering[Int].reverse)
     .map(_._1)
 
-  val nChars = characters.length
+  val nChars: Int = characters.length
 
-  val welcomeMessage = "The soul monger was destroyed, it crumpled onto the ground.\n" +
+  val welcomeMessage: String = "The soul monger was destroyed, it crumpled onto the ground.\n" +
     "But, celebration is yet to come. In the middle of the room, a figure, a bony figure,\n" +
     "with nothing but skins and bones, appeared out of thin air, on top of the remain of the soul monger,\n" +
     "as if destroying the soul monger was a mistake.\n" +
@@ -51,16 +48,13 @@ object FinalBattle extends App {
     "Win condition: Acererak HP reduced to 0\n" +
     "Lost condition: All the playable characters are dead."
 
-  private var turnCount = 0
+  var turnCount = 0
 
-  private var isEnded = false
+  var isEnded = false
 
-  private var isNewTurn = true
+  var isNewTurn = true
 
-  // The game start here
-  run()
-
-  def currentCharacter = this.characters(this.turnCount)
+  def currentCharacter: Character = this.characters(this.turnCount)
 
   def isWon: Boolean = !this.boss.isAlive && this.players.exists(_.isAlive)
 
@@ -68,7 +62,7 @@ object FinalBattle extends App {
 
   def isCompleted: Boolean = this.isWon || this.isDefeated || this.isEnded
 
-  def goodByeMessage = {
+  def goodByeMessage: String = {
     if (this.isWon) "Acererak's body turned into dust and dispersed into the air,\n" +
       "although the air was as still as it could be. They better leave this tomb quickly.\n" +
       "A victory? Maybe. At least they are alive.\n" +
@@ -82,71 +76,22 @@ object FinalBattle extends App {
     else "Nooo, comeback, I promise the game would be fun, don't leave meeeee!!!"
   }
 
-  private def nextTurn(): Unit = {
+  def nextTurn(): Unit = {
     this.isNewTurn = true
     this.turnCount = (this.turnCount + 1) % this.nChars
   }
 
-  private def printPad(line: String, wantedLength: Int): Unit = {
-    val padLength = wantedLength - line.length
-    println("*" + line + " " * padLength + "*")
-  }
-
-  private def printPretty(report: String): Unit = {
-    val longestCharChain = report.split("\n").maxBy(_.length).length
-    println("*" * (longestCharChain + 2))
-    report.split("\n").foreach(line => this.printPad(line, longestCharChain))
-    println("*" * (longestCharChain + 2))
-  }
-
-  @tailrec
-  private def playTurn(): Unit = {
-    if (this.board(boosterTile).nonEmpty) this.board(boosterTile) match {
-      case tile: Booster.type =>
-        val isBoosted = tile.boostCharacter()
-        if (isBoosted) {
-          this.printPretty(
-            s"${this.currentCharacter} stepped on the Tile of Wonder\n" +
-              s"${this.currentCharacter}'s stats increased significantly!!!"
-          )
-        }
-      case _ =>
+  def playTurn(command: String): String = {
+    val action = Action(command)
+    val outcomeReport = action.execute(this.currentCharacter, board)
+    if (outcomeReport != "next" && outcomeReport != "end") {
+      outcomeReport
+    } else if (outcomeReport == "next") {
+      this.nextTurn()
+      "Next turn"
+    } else {
+      this.isEnded = true
+      this.goodByeMessage
     }
-    if (this.turnCount == 0 && this.isNewTurn) {
-      this.isNewTurn = false
-      this.characters.foreach(_.newTurn())
-    }
-    if (!this.isCompleted) {
-      this.printPretty(s"${this.currentCharacter.name}'s turn")
-      if (this.currentCharacter.name == this.boss.name) {
-        this.printPretty(this.boss.takeTurn())
-        this.nextTurn()
-        this.playTurn()
-      } else if (!this.currentCharacter.isAlive) {
-        this.printPretty(s"${this.currentCharacter.name} is dead!")
-        this.nextTurn()
-        playTurn()
-      } else {
-        val command = readLine("Command: ")
-        val action = Action(command)
-        val outcomeReport = action.execute(this.currentCharacter, board)
-        if (outcomeReport != "next" && outcomeReport != "end") {
-          this.printPretty(outcomeReport)
-          playTurn()
-        } else if (outcomeReport == "next") {
-          this.nextTurn()
-          playTurn()
-        } else if (outcomeReport == "end") {
-          this.isEnded = true
-          playTurn()
-        }
-      }
-    }
-  }
-
-  def run(): Unit = {
-    this.printPretty(this.welcomeMessage)
-    playTurn()
-    this.printPretty(this.goodByeMessage)
   }
 }
