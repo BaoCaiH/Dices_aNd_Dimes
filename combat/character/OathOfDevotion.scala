@@ -45,7 +45,7 @@ class OathOfDevotion(
       if (this.isSucceed(target, atkRoll)) {
         this.inflictDmg(target, this.diceSet.roll(this.diceSet.d10) + this.diceSet.roll(3)(this.diceSet.d8) + this.meleeOrRange("melee") + this.isCriticalHit(atkDice, this.diceSet.d10), "radiant")
         this.spellSlot -= 1
-        actionString += s"${this.name} pointed at ${target.name}, ${target.name} was damaged by radiant!\n"
+        actionString += s"${this.name} bashed ${target.name}, ${target.name} was damaged by radiant!\n"
       } else actionString += s"${this.name} tried to inflict radiant damage on ${target.name}, but ${target.name} dodged...\n"
     }
     actionString

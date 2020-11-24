@@ -29,7 +29,7 @@ abstract class Paladin(
     val common = super.helpMessage
     common + "\n" +
       "Paladin's specific commands\n" +
-      "\tlay on hand [hp] [target's name]: heal hp for target\n" +
+      "\tlay on hands [hp] [target's name]: heal hp for target\n" +
       "\taction 1 [target's name]: smite a target with a thunderous strike\n"
   }
 
@@ -64,7 +64,7 @@ abstract class Paladin(
       if (this.isSucceed(target, atkRoll)) {
         this.inflictDmg(target, this.diceSet.roll(this.diceSet.d10) + this.diceSet.roll(2)(this.diceSet.d6) + this.meleeOrRange("melee") + this.isCriticalHit(atkDice, this.diceSet.d10), "thunder")
         this.thunderHits -= 1
-        actionString += s"${this.name} casted Thunderous Smite on ${target.name}, ${target.name} was damaged by thunder!\n"
+        actionString += s"${this.name} bashed ${target.name} with a Thunderous Smite, ${target.name} was damaged by thunder!\n"
       } else actionString += s"${this.name} tried to inflict thunder damage on ${target.name}, but ${target.name} dodged...\n"
     }
     actionString
